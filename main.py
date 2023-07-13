@@ -1,6 +1,7 @@
 import tcod
 
 from engine import Engine
+from map import GameMap
 from input_handers import EventHandler
 from entity import Entity
 
@@ -8,6 +9,9 @@ from entity import Entity
 def main() -> None:
     screen_width = 80
     screen_height = 50
+
+    map_width = 80
+    map_height = 50
 
     tileset = tcod.tileset.load_tilesheet(
         "dejavu10x10_gs_tc.png", 32, 8, tcod.tileset.CHARMAP_TCOD
@@ -19,7 +23,10 @@ def main() -> None:
     npc = Entity((screen_width // 2) - 5, (screen_height // 2) - 5, "&", (255, 255, 0))
     entities = {npc, player}
 
-    engine = Engine(entities=entities, event_handler=event_handler, player=player)
+    game_map = GameMap(map_width, map_height)
+    engine = Engine(
+        entities=entities, event_handler=event_handler, map=game_map, player=player
+    )
 
     with tcod.context.new_terminal(
         screen_width,
