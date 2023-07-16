@@ -1,6 +1,6 @@
 import numpy as np
 
-from typing import Iterable, TYPE_CHECKING
+from typing import Iterable, Optional, TYPE_CHECKING
 
 from tcod.console import Console
 from entity import Entity
@@ -16,6 +16,17 @@ class GameMap:
 
         self.visible = np.full((width, height), fill_value=False, order="F")
         self.explored = np.full((width, height), fill_value=False, order="F")
+
+    def get_blocking_entity(self, location_x: int, location_y: int) -> Optional[Entity]:
+        for entity in self.entities:
+            if (
+                entity.blocks_movement
+                and entity.x == location_x
+                and entity.y == location_y
+            ):
+                return entity
+
+        return None
 
     def in_bounds(self, x: int, y: int) -> bool:
         return 0 <= x < self.width and 0 <= y < self.height
