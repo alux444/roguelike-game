@@ -76,3 +76,8 @@ class BumpAction(ActionWithDirection):
 
         else:
             return MovementAction(self.entity, self.dx, self.dy).perform()
+
+
+class WaitAction(Action):
+    def perform(self) -> None:
+        pass

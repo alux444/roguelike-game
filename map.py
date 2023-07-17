@@ -1,15 +1,13 @@
 import numpy as np
 
-from typing import Iterable, Optional, TYPE_CHECKING
+from typing import Iterable, Iterator, Optional, TYPE_CHECKING
 
 from tcod.console import Console
-from entity import Entity
+
 from engine import Engine
-
+from entity import Actor
+from entity import Entity
 import tile_types
-
-if TYPE_CHECKING:
-    from engine import Engine
 
 
 class GameMap:
@@ -35,6 +33,14 @@ class GameMap:
             # explored but not currently visible
         )
 
+    @property
+    def actors(self) -> Iterator[Actor]:
+        yield from (
+            entity
+            for entity in self.entities
+            if isinstance(entity, Actor) and entity.is_alive
+        )
+
     def get_blocking_entity(self, location_x: int, location_y: int) -> Optional[Entity]:
         for entity in self.entities:
             if (
@@ -43,6 +49,13 @@ class GameMap:
                 and entity.y == location_y
             ):
                 return entity
+
+        return None
+
+    def get_actor_at(self, x: int, y: int) -> Optional[Actor]:
+        for actor in self.actors:
+            if actor.x == x and actor.y == y:
+                return actor
 
         return None
 
