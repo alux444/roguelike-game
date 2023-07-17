@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import copy
-from typing import Tuple, TypeVar, TYPE_CHECKING
+from typing import Optional, Tuple, TypeVar, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from map import GameMap
@@ -12,8 +12,11 @@ T = TypeVar("T", bound="Entity")
 class Entity:
     """Generic entity class"""
 
+    map: GameMap
+
     def __init__(
         self,
+        map: Optional[GameMap] = None,
         x: int = 0,
         y: int = 0,
         char: str = "?",
@@ -27,6 +30,9 @@ class Entity:
         self.color = color
         self.name = name
         self.blocks_movement = blocks_movement
+        if map:
+            self.map = map
+            map.entities.add(self)
 
     def spawn(
         self: T,
@@ -37,9 +43,15 @@ class Entity:
         clone = copy.deepcopy(self)
         clone.x = x
         clone.y = y
+        clone.map = map
         map.entities.add(clone)
         return clone
 
-    def move(self, dx: int, dy: int) -> None:
-        self.x += dx
-        self.y += dy
+    def place(self, x: int, y: int, map: Optional[GameMap] = None) -> None:
+        self.x = x
+        self.y = y
+        if map:
+            if hasattr(self, "map"):
+                self.map.entities.remove(self)
+            self.map = map
+            map.entities.add(self)

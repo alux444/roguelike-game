@@ -1,36 +1,31 @@
-from typing import Iterable, Any
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from tcod.context import Context
 from tcod.console import Console
 from tcod.map import compute_fov
 
-from map import GameMap
-from entity import Entity
 from input_handers import EventHandler
+
+if TYPE_CHECKING:
+    from entity import Entity
+    from map import GameMap
 
 
 class Engine:
+    map: GameMap
+
     def __init__(
         self,
-        event_handler: EventHandler,
-        map: GameMap,
         player: Entity,
     ):
-        self.event_handler = event_handler
-        self.map = map
+        self.event_handler: EventHandler = EventHandler(self)
         self.player = player
-        self.update_fov()
 
-    def handle_events(self, events: Iterable[Any]) -> None:
-        for event in events:
-            action = self.event_handler.dispatch(event)
-
-            if action is None:
-                continue
-
-            action.perform(self, self.player)
-
-            self.update_fov()
+    def handle_mob_event(self) -> None:
+        for entity in self.map.entities - {self.player}:
+            print(f"Hmm... - {entity.name}")
 
     def update_fov(self) -> None:
         self.map.visible[:] = compute_fov(
