@@ -4,6 +4,7 @@ from typing import Iterable, Optional, TYPE_CHECKING
 
 from tcod.console import Console
 from entity import Entity
+from engine import Engine
 
 import tile_types
 

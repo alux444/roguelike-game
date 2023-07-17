@@ -101,7 +101,7 @@ def generate_dungeon(
         dungeon.tiles[new_room.inner] = tile_types.floor
 
         if len(rooms) == 0:
-            player.place(new_room.center, dungeon)
+            player.place(*new_room.center, dungeon)
         else:
             for x, y in tunnel_between(rooms[-1].center, new_room.center):
                 dungeon.tiles[x, y] = tile_types.floor

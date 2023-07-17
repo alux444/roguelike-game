@@ -55,3 +55,7 @@ class Entity:
                 self.map.entities.remove(self)
             self.map = map
             map.entities.add(self)
+
+    def move(self, dx: int, dy: int) -> None:
+        self.x += dx
+        self.y += dy
