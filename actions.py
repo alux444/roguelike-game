@@ -17,6 +17,7 @@ class Action:
         return self.entity.map.engine
 
     def perform(self) -> None:
+        # must be overridden by action
         raise NotImplementedError()
 
 
@@ -33,7 +34,7 @@ class ActionWithDirection(Action):
 
     @property
     def blocking_entity(self) -> Optional[Entity]:
-        return self.engine.map.get_blocking_entity(self.dest_xy)
+        return self.engine.map.get_blocking_entity(self.dest_xy[0], self.dest_xy[1])
 
     def perform(self) -> None:
         raise NotImplementedError()
