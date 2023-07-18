@@ -36,6 +36,11 @@ class EventHandler(tcod.event.EventDispatch[Action]):
             context.convert_event(event)
             self.dispatch(event)
 
+    def ev_mousemotion(self, event: tcod.event.MouseMotion) -> None:
+        if self.engine.map.in_bounds(event.tile.x, event.tile.y):
+            self.engine.mouse_loc = event.tile.x, event.tile.y
+        print(self.engine.mouse_loc)
+
     def ev_quit(self, event: tcod.event.Quit) -> Optional[Action]:
         raise SystemExit()
 

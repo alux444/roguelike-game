@@ -25,6 +25,7 @@ class Engine:
         self.event_handler: EventHandler = MainGameEventHandler(self)
         self.player = player
         self.message_log = MessageLog()
+        self.mouse_loc = (0, 0)
 
     def handle_mob_event(self) -> None:
         for entity in set(self.map.actors) - {self.player}:
