@@ -3,14 +3,14 @@ from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 
 import tcod.event
-
+import libtcodpy
+from tcod.console import Console
 
 from actions import Action, EscapeAction, BumpAction, WaitAction
 
 if TYPE_CHECKING:
     from engine import Engine
     from tcod.context import Context
-    from tcod.console import Console
 
 MOVE_KEYS = {
     # Arrow keys.
@@ -76,6 +76,8 @@ class MainGameEventHandler(EventHandler):
             action = WaitAction(player)
         elif key == tcod.event.KeySym.ESCAPE:
             action = EscapeAction(player)
+        elif key == tcod.event.KeySym.v:
+            self.engine.event_handler = HistoryViewer(self.engine)
 
         return action
 
@@ -99,3 +101,55 @@ class GameOverEventHandler(EventHandler):
             action = EscapeAction(self.engine.player)
 
         return action
+
+
+CURSOR_KEYS = {
+    tcod.event.KeySym.UP: -1,
+    tcod.event.KeySym.DOWN: 1,
+    tcod.event.KeySym.PAGEUP: -10,
+    tcod.event.KeySym.PAGEDOWN: 10,
+}
+
+
+class HistoryViewer(EventHandler):
+    def __init__(self, engine: Engine):
+        super().__init__(engine)
+        self.log_length = len(engine.message_log.messages)
+        self.cursor = self.log_length - 1
+
+    def on_render(self, console: Console) -> None:
+        super().on_render(console)
+
+        log_console = Console(console.width - 6, console.height - 6)
+
+        log_console.draw_frame(0, 0, log_console.width, log_console.height)
+        log_console.print_box(
+            0,
+            0,
+            log_console.width,
+            1,
+            "| Message History |",
+            alignment=libtcodpy.CENTER,
+        )
+
+        self.engine.message_log.render_messages(
+            log_console,
+            1,
+            1,
+            log_console.width - 2,
+            log_console.height - 2,
+            self.engine.message_log.messages[: self.cursor + 1],
+        )
+        log_console.blit(console, 3, 3)
+
+    def ev_keydown(self, event: tcod.event.KeyDown) -> None:
+        if event.sym in CURSOR_KEYS:
+            adjust = CURSOR_KEYS[event.sym]
+            if adjust < 0 and self.cursor == 0:
+                self.cursor = self.log_length - 1
+            elif adjust > 0 and self.cursor == self.log_length - 1:
+                self.cursor = 0
+            else:
+                self.cursor = max(0, min(self.cursor + adjust, self.log_length - 1))
+        else:
+            self.engine.event_handler = MainGameEventHandler(self.engine)
