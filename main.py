@@ -1,5 +1,6 @@
 import tcod
 import copy
+import color
 
 from engine import Engine
 from procgen import generate_dungeon
@@ -11,7 +12,7 @@ def main() -> None:
     screen_height = 50
 
     map_width = 80
-    map_height = 50
+    map_height = 43
 
     room_max_size = 10
     room_min_size = 6
@@ -34,6 +35,8 @@ def main() -> None:
         map_height=map_height,
         engine=engine,
     )
+
+    engine.message_log.add_message("Welcome to the rat dungeon.", color.welcome_text)
 
     engine.update_fov()
 
