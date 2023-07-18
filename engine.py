@@ -9,7 +9,7 @@ from tcod.map import compute_fov
 from input_handers import EventHandler
 
 if TYPE_CHECKING:
-    from entity import Entity
+    from entity import Actor
     from map import GameMap
 
 
@@ -18,7 +18,7 @@ class Engine:
 
     def __init__(
         self,
-        player: Entity,
+        player: Actor,
     ):
         self.event_handler: EventHandler = EventHandler(self)
         self.player = player
@@ -37,6 +37,12 @@ class Engine:
 
     def render(self, console: Console, context: Context) -> None:
         self.map.render(console)
+
+        console.print(
+            x=1,
+            y=47,
+            string=f"HP: {self.player.fighter.hp}/{self.player.fighter.max_hp}",
+        )
 
         context.present(console)
 
