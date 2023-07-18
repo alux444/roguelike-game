@@ -6,7 +6,7 @@ from tcod.console import Console
 from tcod.map import compute_fov
 
 from input_handers import MainGameEventHandler
-from render_functions import render_bar
+from render_functions import render_bar, render_names
 from message_log import MessageLog
 
 if TYPE_CHECKING:
@@ -50,3 +50,5 @@ class Engine:
             max_val=self.player.fighter.max_hp,
             total_width=20,
         )
+
+        render_names(console=console, engine=self)
