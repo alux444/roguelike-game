@@ -4,11 +4,13 @@ from typing import Optional, TYPE_CHECKING
 
 import tcod.event
 
+
 from actions import Action, EscapeAction, BumpAction, WaitAction
 
 if TYPE_CHECKING:
     from engine import Engine
-
+    from tcod.context import Context
+    from tcod.console import Console
 
 MOVE_KEYS = {
     # Arrow keys.
@@ -29,16 +31,23 @@ class EventHandler(tcod.event.EventDispatch[Action]):
     def __init__(self, engine: Engine):
         self.engine = engine
 
-    def handle_events(self) -> None:
-        raise NotImplementedError()
+    def handle_events(self, context: Context) -> None:
+        for event in tcod.event.wait():
+            context.convert_event(event)
+            self.dispatch(event)
 
     def ev_quit(self, event: tcod.event.Quit) -> Optional[Action]:
         raise SystemExit()
 
+    def on_render(self, console: Console) -> None:
+        self.engine.render(console)
+
 
 class MainGameEventHandler(EventHandler):
-    def handle_events(self) -> None:
+    def handle_events(self, context: Context) -> None:
         for event in tcod.event.wait():
+            context.convert_event(event)
+
             action = self.dispatch(event)
 
             if action is None:
@@ -68,7 +77,7 @@ class MainGameEventHandler(EventHandler):
 
 
 class GameOverEventHandler(EventHandler):
-    def handle_events(self) -> None:
+    def handle_events(self, context: Context) -> None:
         for event in tcod.event.wait():
             action = self.dispatch(event)
 
