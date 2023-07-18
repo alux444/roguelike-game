@@ -6,11 +6,12 @@ from tcod.context import Context
 from tcod.console import Console
 from tcod.map import compute_fov
 
-from input_handers import EventHandler
+from input_handers import MainGameEventHandler
 
 if TYPE_CHECKING:
     from entity import Actor
     from map import GameMap
+    from input_handers import EventHandler
 
 
 class Engine:
@@ -20,7 +21,7 @@ class Engine:
         self,
         player: Actor,
     ):
-        self.event_handler: EventHandler = EventHandler(self)
+        self.event_handler: EventHandler = MainGameEventHandler(self)
         self.player = player
 
     def handle_mob_event(self) -> None:
