@@ -42,7 +42,7 @@ class Engine:
     def render(self, console: Console, context: Context) -> None:
         self.map.render(console)
 
-        self.message_log.render(console=console, x=21, y=45, width=40, height=3)
+        self.message_log.render(console=console, x=21, y=42, width=45, height=6)
 
         render_bar(
             console=console,

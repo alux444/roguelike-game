@@ -53,5 +53,5 @@ class MessageLog:
             for line in reversed(textwrap.wrap(message.full_text, width)):
                 console.print(x=x, y=y + y_offset, string=line, fg=message.fg)
                 y_offset -= 1
-                if y + y_offset < 0:
+                if y_offset < 0:
                     return
