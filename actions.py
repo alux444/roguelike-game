@@ -63,7 +63,7 @@ class PickupAction(Action):
                 self.engine.message_log.add_message(f"You picked up {item.name}")
                 return
 
-            raise exceptions.Impossible("Nothing to pick up.")
+        raise exceptions.Impossible("Nothing to pick up.")
 
 
 class ActionWithDirection(Action):
