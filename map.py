@@ -1,13 +1,17 @@
+from __future__ import annotations
+
 import numpy as np
 
 from typing import Iterable, Iterator, Optional, TYPE_CHECKING
 
 from tcod.console import Console
 
-from engine import Engine
-from entity import Actor
-from entity import Entity
+from entity import Actor, Item
 import tile_types
+
+if TYPE_CHECKING:
+    from engine import Engine
+    from entity import Entity
 
 
 class GameMap:
@@ -78,5 +82,5 @@ class GameMap:
         for entity in entities_sorted_for_render:
             if self.visible[entity.x, entity.y]:
                 console.print(
-                    x=entity.x, y=entity.y, string=entity.char, fg=entity.color
+                    x=entity.x, y=entity.y, string=str(entity.char), fg=entity.color
                 )

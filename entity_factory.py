@@ -1,4 +1,5 @@
-from entity import Actor
+from entity import Actor, Item
+from components.consumable import HealingConsumable
 from components.ai import HostileEnemy
 from components.fighter import Fighter
 
@@ -24,4 +25,11 @@ frog = Actor(
     name="Frog",
     ai_cls=HostileEnemy,
     fighter=Fighter(hp=16, defense=1, power=4),
+)
+
+health_potion = Item(
+    char="+",
+    color=(127, 0, 255),
+    name="Health Pot",
+    consumable=HealingConsumable(amount=4),
 )

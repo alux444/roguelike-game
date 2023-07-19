@@ -19,6 +19,7 @@ def main() -> None:
     room_min_size = 6
     max_rooms = 30
     max_mobs_room = 2
+    max_items_room = 2
 
     tileset = tcod.tileset.load_tilesheet(
         "dejavu10x10_gs_tc.png", 32, 8, tcod.tileset.CHARMAP_TCOD
@@ -30,6 +31,7 @@ def main() -> None:
     engine.map = generate_dungeon(
         max_rooms=max_rooms,
         max_mobs_room=max_mobs_room,
+        max_items_room=max_items_room,
         room_min_size=room_min_size,
         room_max_size=room_max_size,
         map_width=map_width,

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import copy
 from typing import Optional, Tuple, Type, TypeVar, TYPE_CHECKING
-from map import GameMap
 
 from render_order import RenderOrder
 
@@ -119,7 +118,8 @@ class Item(Entity):
         super().__init__(
             x=x,
             y=y,
-            char=color,
+            char=char,
+            color=color,
             name=name,
             blocks_movement=False,
             render_order=RenderOrder.ITEM,
