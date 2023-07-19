@@ -7,8 +7,10 @@ import tcod.event
 import libtcodpy
 from tcod.console import Console
 
+import actions
 from actions import Action, EscapeAction, BumpAction, WaitAction, PickupAction
 import color
+from entity import Item
 import exceptions
 
 if TYPE_CHECKING:
@@ -82,6 +84,10 @@ class MainGameEventHandler(EventHandler):
             self.engine.event_handler = HistoryViewer(self.engine)
         elif key == tcod.event.KeySym.g:
             action = PickupAction(player)
+        elif key == tcod.event.KeySym.i:
+            action = InventoryActivateHandler(self.engine)
+        elif key == tcod.event.KeySym.d:
+            action = InventoryActivateHandler(self.engine)
 
         return action
 
@@ -219,3 +225,17 @@ class InventoryEventHandler(AskUserEventHandler):
 
     def on_item_selected(self, item: Item) -> Optional[Action]:
         raise NotImplementedError()
+
+
+class InventoryActivateHandler(InventoryEventHandler):
+    TITLE = "Select an item to use."
+
+    def on_item_selected(self, item: Item) -> Optional[Action]:
+        return item.consumable.get_action(self.engine.player)
+
+
+class InventoryDropHandler(InventoryEventHandler):
+    TITLE = "Select an item to drop."
+
+    def on_item_selected(self, item: Item) -> Optional[Action]:
+        return actions.DropItem(self.engine.player, item)

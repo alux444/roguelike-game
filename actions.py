@@ -24,6 +24,48 @@ class Action:
         raise NotImplementedError()
 
 
+class ItemAction(Action):
+    def __init__(
+        self, entity: Actor, item: Item, target_xy: Optional[Tuple[int, int]] = None
+    ) -> None:
+        super().__init__(entity)
+        self.item = item
+        if not target_xy:
+            target_xy = entity.x, entity.y
+        self.target_xy = target_xy
+
+    @property
+    def target_actor(self) -> Optional[Actor]:
+        return self.engine.map.get_actor_at(*self.target_xy)
+
+    def perform(self) -> None:
+        self.item.consumable.activate(self)
+
+
+class PickupAction(Action):
+    def __init__(self, entity: Actor) -> None:
+        super().__init__(entity)
+
+    def perform(self) -> None:
+        actor_location_x = self.entity.x
+        actor_location_y = self.entity.y
+        inventory = self.entity.inventory
+
+        for item in self.engine.map.items:
+            if actor_location_x == item.x and actor_location_y == item.y:
+                if len(inventory.items) >= inventory.capacity:
+                    raise exceptions.Impossible("Full inventory.")
+
+                self.engine.map.entities.remove(item)
+                item.parent = self.entity.inventory
+                inventory.items.append(item)
+
+                self.engine.message_log.add_message(f"You picked up {item.name}")
+                return
+
+            raise exceptions.Impossible("Nothing to pick up.")
+
+
 class ActionWithDirection(Action):
     def __init__(self, entity: Actor, dx: int, dy: int) -> None:
         super().__init__(entity)
@@ -50,6 +92,11 @@ class ActionWithDirection(Action):
 class EscapeAction(Action):
     def perform(self) -> None:
         raise SystemExit()
+
+
+class DropItem(ItemAction):
+    def perform(self) -> None:
+        self.entity.inventory.drop(self.item)
 
 
 class MovementAction(ActionWithDirection):
@@ -104,45 +151,3 @@ class BumpAction(ActionWithDirection):
 class WaitAction(Action):
     def perform(self) -> None:
         pass
-
-
-class ItemAction(Action):
-    def __init__(
-        self, entity: Actor, item: Item, target_xy: Optional[Tuple[int, int]] = None
-    ) -> None:
-        super().__init__(entity)
-        self.item = item
-        if not target_xy:
-            target_xy = entity.x, entity.y
-        self.target_xy = target_xy
-
-    @property
-    def target_actor(self) -> Optional[Actor]:
-        return self.engine.map.get_actor_at(*self.target_xy)
-
-    def perform(self) -> None:
-        self.item.consumable.activate(self)
-
-
-class PickupAction(Action):
-    def __init__(self, entity: Actor) -> None:
-        super().__init__(entity)
-
-    def perform(self) -> None:
-        actor_location_x = self.entity.x
-        actor_location_y = self.entity.y
-        inventory = self.entity.inventory
-
-        for item in self.engine.map.items:
-            if actor_location_x == item.x and actor_location_y == item.y:
-                if len(inventory.items) >= inventory.capacity:
-                    raise exceptions.Impossible("Full inventory.")
-
-                self.engine.map.entities.remove(item)
-                item.parent = self.entity.inventory
-                inventory.items.append(item)
-
-                self.engine.message_log.add_message(f"You picked up {item.name}")
-                return
-
-            raise exceptions.Impossible("Nothing to pick up.")
