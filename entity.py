@@ -64,7 +64,9 @@ class Entity:
         self.y = y
         if map:
             if hasattr(self, "parent"):
-                self.parent.entities.remove(self)
+                if self.parent is self.gamemap:
+                    print("aaaa")
+                    self.parent.entities.remove(self)
             self.parent = map
             map.entities.add(self)
 
@@ -111,7 +113,6 @@ class Item(Entity):
     def __init__(
         self,
         *,
-        parent: GameMap | None = None,
         x: int = 0,
         y: int = 0,
         char: str = "?",
