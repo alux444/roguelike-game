@@ -56,11 +56,11 @@ def main() -> None:
             context.present(root_console)
 
             try:
-                for event in tcod.event.wait:
+                for event in tcod.event.wait():
                     context.convert_event(event)
                     engine.event_handler.handle_events(event)
             except Exception:
-                traceback.print_exc
+                traceback.print_exc()
                 engine.message_log.add_message(traceback.format_exc(), color.error)
 
 
