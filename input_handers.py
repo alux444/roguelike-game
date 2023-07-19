@@ -1,18 +1,19 @@
 from __future__ import annotations
 
 from typing import Optional, TYPE_CHECKING
+import tcod
 
 import tcod.event
 import libtcodpy
 from tcod.console import Console
 
-from actions import Action, EscapeAction, BumpAction, WaitAction
+from actions import Action, EscapeAction, BumpAction, WaitAction, PickupAction
 import color
 import exceptions
 
 if TYPE_CHECKING:
     from engine import Engine
-    from tcod.context import Context
+    from entity import Item
 
 MOVE_KEYS = {
     # Arrow keys.
@@ -79,6 +80,8 @@ class MainGameEventHandler(EventHandler):
             action = EscapeAction(player)
         elif key == tcod.event.KeySym.v:
             self.engine.event_handler = HistoryViewer(self.engine)
+        elif key == tcod.event.KeySym.g:
+            action = PickupAction(player)
 
         return action
 
@@ -139,3 +142,80 @@ class HistoryViewer(EventHandler):
                 self.cursor = max(0, min(self.cursor + adjust, self.log_length - 1))
         else:
             self.engine.event_handler = MainGameEventHandler(self.engine)
+
+
+class AskUserEventHandler(EventHandler):
+    def handle_action(self, action: Optional[Action]) -> bool:
+        if super().handle_action(action):
+            self.engine.event_handler = MainGameEventHandler(self.engine)
+            return True
+
+        return False
+
+    def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[Action]:
+        if event.sym in {tcod.event.KeySym.LSHIFT, tcod.event.KeySym.RSHIFT}:
+            return None
+        return self.on_exit()
+
+    def ev_mousebuttondown(self, event: tcod.event.MouseButtonDown) -> Action | None:
+        return self.on_exit()
+
+    def on_exit(self) -> Optional[Action]:
+        self.engine.event_handler = MainGameEventHandler(self.engine)
+        return None
+
+
+class InventoryEventHandler(AskUserEventHandler):
+    TITLE = "<Missing>"
+
+    def on_render(self, console: Console) -> None:
+        super().on_render(console)
+        number_of_items = len(self.engine.player.inventory)
+        height = number_of_items + 2
+
+        if height <= 3:
+            height = 3
+
+        if self.engine.player.x <= 30:
+            x = 40
+        else:
+            x = 0
+
+        y = 0
+
+        width = len(self.TITLE) + 4
+
+        console.draw_frame(
+            x=x,
+            y=y,
+            width=width,
+            height=height,
+            title=self.TITLE,
+            clear=True,
+            fg=(255, 255, 255),
+            bg=(0, 0, 0),
+        )
+
+        if number_of_items > 0:
+            for i, item in enumerate(self.engine.player.inventory.items):
+                item_key = chr(ord("a") + i)
+                console.print(x + 1, y + i + 1, f"({item_key} {item.name})")
+            else:
+                console.print(x + 1, y + 1, "(Empty)")
+
+    def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[Action]:
+        player = self.engine.player
+        key = event.sym
+        index = key - tcod.event.K_a
+
+        if 0 <= index <= 26:
+            try:
+                selected_item = player.inventory.items[index]
+            except IndexError:
+                self.engine.message_log.add_message("Invalid entry.", color.invalid)
+                return None
+            return self.on_item_selected(selected_item)
+        return super().ev_keydown(event)
+
+    def on_item_selected(self, item: Item) -> Optional[Action]:
+        raise NotImplementedError()
