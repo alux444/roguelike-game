@@ -15,7 +15,7 @@ class Action:
 
     @property
     def engine(self) -> Engine:
-        return self.entity.map.engine
+        return self.entity.gamemap.engine
 
     def perform(self) -> None:
         # must be overridden by action

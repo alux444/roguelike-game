@@ -6,13 +6,12 @@ import numpy as np
 import tcod
 
 from actions import Action, MeleeAction, MovementAction, WaitAction
-from components.base_component import BaseComponent
 
 if TYPE_CHECKING:
     from entity import Actor
 
 
-class BaseAi(Action, BaseComponent):
+class BaseAi(Action):
     entity: Actor
 
     def perform(self) -> None:
@@ -20,9 +19,9 @@ class BaseAi(Action, BaseComponent):
 
     def get_path_to(self, dest_x: int, dest_y: int) -> List[Tuple[int, int]]:
         # path to target position, if none, return empty list
-        cost = np.array(self.entity.map.tiles["walkable"], dtype=np.int8)
+        cost = np.array(self.entity.gamemap.tiles["walkable"], dtype=np.int8)
 
-        for entity in self.entity.map.entities:
+        for entity in self.entity.gamemap.entities:
             if entity.blocks_movement and cost[entity.x, entity.y]:
                 cost[entity.x, entity.y] += 10
 

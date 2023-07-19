@@ -16,11 +16,11 @@ T = TypeVar("T", bound="Entity")
 class Entity:
     """Generic entity class"""
 
-    map: GameMap
+    parent: GameMap
 
     def __init__(
         self,
-        map: Optional[GameMap] = None,
+        parent: Optional[GameMap] = None,
         x: int = 0,
         y: int = 0,
         char: str = "?",
@@ -36,9 +36,13 @@ class Entity:
         self.name = name
         self.blocks_movement = blocks_movement
         self.render_order = render_order
-        if map:
-            self.map = map
-            map.entities.add(self)
+        if parent:
+            self.parent = parent
+            parent.entities.add(self)
+
+    @property
+    def gamemap(self) -> GameMap:
+        return self.parent
 
     def spawn(
         self: T,
@@ -49,7 +53,7 @@ class Entity:
         clone = copy.deepcopy(self)
         clone.x = x
         clone.y = y
-        clone.map = map
+        clone.parent = map
         map.entities.add(clone)
         return clone
 
@@ -57,9 +61,9 @@ class Entity:
         self.x = x
         self.y = y
         if map:
-            if hasattr(self, "map"):
-                self.map.entities.remove(self)
-            self.map = map
+            if hasattr(self, "parent"):
+                self.parent.entities.remove(self)
+            self.parent = map
             map.entities.add(self)
 
     def move(self, dx: int, dy: int) -> None:
@@ -91,7 +95,7 @@ class Actor(Entity):
 
         self.ai: Optional[BaseAi] = ai_cls(self)
         self.fighter = fighter
-        self.fighter.entity = self
+        self.fighter.parent = self
 
     @property
     def is_alive(self) -> bool:
