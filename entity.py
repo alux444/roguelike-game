@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import copy
 from typing import Optional, Tuple, Type, TypeVar, TYPE_CHECKING
+from map import GameMap
 
 from render_order import RenderOrder
 
 if TYPE_CHECKING:
     from components.ai import BaseAi
     from components.fighter import Fighter
+    from components.consumable import Consumable
     from map import GameMap
 
 T = TypeVar("T", bound="Entity")
@@ -100,3 +102,28 @@ class Actor(Entity):
     @property
     def is_alive(self) -> bool:
         return bool(self.ai)
+
+
+class Item(Entity):
+    def __init__(
+        self,
+        *,
+        parent: GameMap | None = None,
+        x: int = 0,
+        y: int = 0,
+        char: str = "?",
+        color: Tuple[int, int, int] = (255, 255, 255),
+        name: str = "<Unnamed>",
+        consumable: Consumable,
+    ):
+        super().__init__(
+            x=x,
+            y=y,
+            char=color,
+            name=name,
+            blocks_movement=False,
+            render_order=RenderOrder.ITEM,
+        )
+
+        self.consumable = consumable
+        self.consumable.parent = self
