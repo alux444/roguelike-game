@@ -2,6 +2,7 @@ from entity import Actor, Item
 from components.consumable import HealingConsumable
 from components.ai import HostileEnemy
 from components.fighter import Fighter
+from components.inventory import Inventory
 
 player = Actor(
     char="@",
@@ -9,6 +10,7 @@ player = Actor(
     name="Player",
     ai_cls=HostileEnemy,
     fighter=Fighter(hp=30, defense=2, power=5),
+    inventory=Inventory(capacity=26),
 )
 
 rat = Actor(
@@ -17,6 +19,7 @@ rat = Actor(
     name="Rat",
     ai_cls=HostileEnemy,
     fighter=Fighter(hp=10, defense=0, power=3),
+    inventory=Inventory(capacity=0),
 )
 
 frog = Actor(
@@ -25,6 +28,7 @@ frog = Actor(
     name="Frog",
     ai_cls=HostileEnemy,
     fighter=Fighter(hp=16, defense=1, power=4),
+    inventory=Inventory(capacity=0),
 )
 
 health_potion = Item(
