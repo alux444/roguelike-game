@@ -45,7 +45,7 @@ class Entity:
 
     @property
     def gamemap(self) -> GameMap:
-        return self.parent
+        return self.parent.gamemap
 
     def spawn(
         self: T,

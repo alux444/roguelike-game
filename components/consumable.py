@@ -54,7 +54,7 @@ class LightningConsumable(Consumable):
     def activate(self, action: actions.ItemAction) -> None:
         consumer = action.entity
         target = None
-        closest_dist = self.max_range + 1
+        closest_dist = self.max_range + 1.0
 
         for actor in self.engine.map.actors:
             if actor is not consumer and self.parent.gamemap.visible[actor.x, actor.y]:
@@ -64,11 +64,11 @@ class LightningConsumable(Consumable):
                     target = actor
                     closest_dist = distance
 
-            if target:
-                self.engine.message_log.add_message(
-                    f"You zap {target.name} for {self.damage} damage."
-                )
-                target.fighter.take_damage(self.damage)
-                self.consume
-            else:
-                raise Impossible("No enemies to zap.")
+        if target:
+            self.engine.message_log.add_message(
+                f"You zap {target.name} for {self.damage} damage."
+            )
+            target.fighter.take_damage(self.damage)
+            self.consume
+        else:
+            raise Impossible("No enemies to zap.")

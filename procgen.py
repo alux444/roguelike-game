@@ -75,7 +75,10 @@ def place_entities(
         y = random.randint(room.y1 + 1, room.y2 - 1)
 
         if not any(entity.x == x and entity.y == y for entity in dungeon.entities):
-            entity_factory.health_potion.spawn(dungeon, x, y)
+            if random.random() < 0.7:
+                entity_factory.health_potion.spawn(dungeon, x, y)
+            else:
+                entity_factory.lightning_scroll.spawn(dungeon, x, y)
 
 
 def generate_dungeon(
@@ -93,7 +96,7 @@ def generate_dungeon(
 
     rooms: List[RectangularRoom] = []
 
-    for r in range(max_rooms):
+    for _ in range(max_rooms):
         room_width = random.randint(room_min_size, room_max_size)
         room_height = random.randint(room_min_size, room_max_size)
 
