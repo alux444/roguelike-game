@@ -92,3 +92,8 @@ class ConfusedEnemy(BaseAi):
             )
 
             self.turns_remaining -= 1
+            return BumpAction(
+                self.entity,
+                direction_x,
+                direction_y,
+            ).perform()
