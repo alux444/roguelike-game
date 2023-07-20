@@ -10,7 +10,7 @@ from tcod.console import Console
 import actions
 from actions import Action, BumpAction, WaitAction, PickupAction
 import color
-from entity import Item
+
 import exceptions
 
 if TYPE_CHECKING:
@@ -30,6 +30,8 @@ MOVE_KEYS = {
 }
 
 WAIT_KEYS = {tcod.event.KeySym.PERIOD}
+
+CONFIRM_KEYS = {tcod.event.KeySym.RETURN, tcod.event.KeySym.KP_ENTER}
 
 
 class EventHandler(tcod.event.EventDispatch[Action]):
@@ -155,6 +157,52 @@ class InventoryDropHandler(InventoryEventHandler):
         return actions.DropItem(self.engine.player, item)
 
 
+class SelectIndexHandler(AskUserEventHandler):
+    def __init__(self, engine: Engine):
+        super().__init__(engine)
+        player = self.engine.player
+        engine.mouse_loc = player.x, player.y
+
+    def on_render(self, console: Console) -> None:
+        super().on_render(console)
+        x, y = self.engine.mouse_loc
+        console.rgb["bg"][x, y] = color.white
+        console.rgb["fg"][x, y] = color.black
+
+    def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[Action]:
+        key = event.sym
+        if key in MOVE_KEYS:
+            modifier = 1
+
+            x, y = self.engine.mouse_loc
+            dx, dy = MOVE_KEYS[key]
+            x += dx * modifier
+            y += dy * modifier
+
+            x = max(0, min(x, self.engine.map.width - 1))
+            y = max(0, min(y, self.engine.map.height - 1))
+
+            self.engine.mouse_loc = x, y
+            return None
+        elif key in CONFIRM_KEYS:
+            return self.on_index_selected(*self.engine.mouse_loc)
+        return super().ev_keydown(event)
+
+    def ev_mousebuttondown(self, event: tcod.event.MouseButtonDown) -> Action | None:
+        if self.engine.map.in_bounds(*event.tile):
+            if event.button == 1:
+                return self.on_index_selected(*event.tile)
+        return super().ev_mousebuttondown(event)
+
+    def on_index_selected(self, x: int, y: int) -> Optional[Action]:
+        raise NotImplementedError()
+
+
+class LookHandler(SelectIndexHandler):
+    def on_index_selected(self, x: int, y: int) -> None:
+        self.engine.event_handler = MainGameEventHandler(self.engine)
+
+
 class MainGameEventHandler(EventHandler):
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[Action]:
         action: Optional[Action] = None
@@ -179,6 +227,9 @@ class MainGameEventHandler(EventHandler):
             self.engine.event_handler = InventoryActivateHandler(self.engine)
         elif key == tcod.event.KeySym.d:
             self.engine.event_handler = InventoryDropHandler(self.engine)
+
+        elif key == tcod.event.KeySym.SLASH:
+            self.engine.event_handler = LookHandler(self.engine)
 
         return action
 
