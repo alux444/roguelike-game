@@ -78,6 +78,8 @@ def place_entities(
             chance = random.random()
             if chance < 0.7:
                 entity_factory.health_potion.spawn(dungeon, x, y)
+            elif chance < 0.8:
+                entity_factory.bomb.spawn(dungeon, x, y)
             elif chance < 0.9:
                 entity_factory.confusion_scroll.spawn(dungeon, x, y)
             else:

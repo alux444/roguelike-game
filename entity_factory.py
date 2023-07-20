@@ -3,6 +3,7 @@ from components.consumable import (
     HealingConsumable,
     LightningConsumable,
     ConfusionConsumable,
+    BombConsumable,
 )
 from components.ai import HostileEnemy
 from components.fighter import Fighter
@@ -54,4 +55,11 @@ confusion_scroll = Item(
     color=(206, 63, 255),
     name="Confusion Scroll",
     consumable=ConfusionConsumable(number_turns=10),
+)
+
+bomb = Item(
+    char="B",
+    color=(255, 0, 0),
+    name="Bomb",
+    consumable=BombConsumable(damage=12, radius=3),
 )

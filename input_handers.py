@@ -10,7 +10,6 @@ from tcod.console import Console
 import actions
 from actions import Action, BumpAction, WaitAction, PickupAction
 import color
-from engine import Engine
 
 import exceptions
 
