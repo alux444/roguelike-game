@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from typing import List, Tuple, TYPE_CHECKING
+from typing import List, Tuple, Optional, TYPE_CHECKING
 
 import numpy as np
+import random
 import tcod
 
-from actions import Action, MeleeAction, MovementAction, WaitAction
+from actions import Action, BumpAction, MeleeAction, MovementAction, WaitAction
+from entity import Actor
 
 if TYPE_CHECKING:
     from entity import Actor
@@ -59,3 +61,34 @@ class HostileEnemy(BaseAi):
             ).perform()
 
         return WaitAction(self.entity).perform()
+
+
+class ConfusedEnemy(BaseAi):
+    def __init__(
+        self, entity: Actor, previous_ai: Optional[BaseAi], turns_remaining: int
+    ):
+        super().__init__(entity)
+        self.previous_ai = previous_ai
+        self.turns_remaining = turns_remaining
+
+    def perform(self) -> None:
+        if self.turns_remaining <= 0:
+            self.engine.message_log.add_message(
+                f"The {self.entity.name} is no longer confused."
+            )
+            self.entity.ai = self.previous_ai
+        else:
+            direction_x, direction_y = random.choice(
+                [
+                    (-1, -1),  # Northwest
+                    (0, -1),  # North
+                    (1, -1),  # Northeast
+                    (-1, 0),  # West
+                    (1, 0),  # East
+                    (-1, 1),  # Southwest
+                    (0, 1),  # South
+                    (1, 1),  # Southeast
+                ]
+            )
+
+            self.turns_remaining -= 1
