@@ -9,7 +9,7 @@ import entity_factory
 
 
 def main() -> None:
-    screen_width = 80
+    screen_width = 82
     screen_height = 50
 
     map_width = 80

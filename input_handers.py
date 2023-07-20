@@ -8,7 +8,7 @@ import libtcodpy
 from tcod.console import Console
 
 import actions
-from actions import Action, EscapeAction, BumpAction, WaitAction, PickupAction
+from actions import Action, BumpAction, WaitAction, PickupAction
 import color
 from entity import Item
 import exceptions
@@ -169,7 +169,7 @@ class MainGameEventHandler(EventHandler):
         elif key in WAIT_KEYS:
             action = WaitAction(player)
         elif key == tcod.event.KeySym.ESCAPE:
-            action = EscapeAction(player)
+            raise SystemExit()
         elif key == tcod.event.KeySym.v:
             self.engine.event_handler = HistoryViewer(self.engine)
         elif key == tcod.event.KeySym.g:

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import copy
-from typing import Optional, Tuple, Type, TypeVar, TYPE_CHECKING
+import math
+from typing import Optional, Tuple, Type, TypeVar, TYPE_CHECKING, Union
 
 from render_order import RenderOrder
 
@@ -18,7 +19,7 @@ T = TypeVar("T", bound="Entity")
 class Entity:
     """Generic entity class"""
 
-    parent: GameMap
+    parent: Union[GameMap, Inventory]
 
     def __init__(
         self,
@@ -65,10 +66,12 @@ class Entity:
         if map:
             if hasattr(self, "parent"):
                 if self.parent is self.gamemap:
-                    print("aaaa")
                     self.parent.entities.remove(self)
             self.parent = map
             map.entities.add(self)
+
+    def distance(self, x: int, y: int) -> float:
+        return math.sqrt((x - self.x) ** 2 + (y - self.y) ** 2)
 
     def move(self, dx: int, dy: int) -> None:
         self.x += dx
