@@ -5,8 +5,11 @@ from typing import Optional, TYPE_CHECKING
 import actions
 import color
 import components.inventory
+import components.ai
 from components.base_component import BaseComponent
+from entity import Actor
 from exceptions import Impossible
+from input_handers import SingleRangedAttackHandler
 
 if TYPE_CHECKING:
     from entity import Actor, Item
@@ -72,3 +75,38 @@ class LightningConsumable(Consumable):
             self.consume
         else:
             raise Impossible("No enemies to zap.")
+
+
+class ConfusionConsumable(Consumable):
+    def __init__(self, number_turns: int) -> None:
+        self.number_turns = number_turns
+
+    def get_action(self, consumer: Actor) -> Optional[actions.Action]:
+        self.engine.message_log.add_message(
+            "Select target location.", color.needs_target
+        )
+        self.engine.event_handler = SingleRangedAttackHandler(
+            self.engine,
+            callback=lambda xy: actions.ItemAction(consumer, self.parent, xy),
+        )
+        return None
+
+    def activate(self, action: actions.ItemAction) -> None:
+        consumer = action.entity
+        target = action.target_actor
+
+        if not self.engine.map.visible[action.target_xy]:
+            raise Impossible("Can't target out of FOV.")
+        if not target:
+            raise Impossible("You must select an enemy.")
+        if target is consumer:
+            raise Impossible("You can't use that on yourself.")
+
+        self.engine.message_log.add_message(
+            f"You've confused {target.name}.", color.status_effect_applied
+        )
+
+        target.ai = components.ai.ConfusedEnemy(
+            entity=target, previous_ai=target.ai, turns_remaining=self.number_turns
+        )
+        self.consume()

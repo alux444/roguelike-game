@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional, TYPE_CHECKING
+from typing import Callable, Tuple, Optional, TYPE_CHECKING
 import tcod
 
 import tcod.event
@@ -10,6 +10,7 @@ from tcod.console import Console
 import actions
 from actions import Action, BumpAction, WaitAction, PickupAction
 import color
+from engine import Engine
 
 import exceptions
 
@@ -201,6 +202,17 @@ class SelectIndexHandler(AskUserEventHandler):
 class LookHandler(SelectIndexHandler):
     def on_index_selected(self, x: int, y: int) -> None:
         self.engine.event_handler = MainGameEventHandler(self.engine)
+
+
+class SingleRangedAttackHandler(SelectIndexHandler):
+    def __init__(
+        self, engine: Engine, callback: Callable[[Tuple[int, int]], Optional[Action]]
+    ):
+        super().__init__(engine)
+        self.callback = callback
+
+    def on_index_selected(self, x: int, y: int) -> Optional[Action]:
+        return self.callback((x, y))
 
 
 class MainGameEventHandler(EventHandler):
