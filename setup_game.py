@@ -6,6 +6,9 @@ from typing import Optional
 import tcod
 import libtcodpy
 from tcod.console import Console
+import lzma
+import pickle
+import traceback
 
 import color
 from engine import Engine
@@ -48,6 +51,13 @@ def new_game() -> Engine:
     return engine
 
 
+def load_game(filename: str) -> Engine:
+    with open(filename, "rb") as f:
+        engine = pickle.loads(lzma.decompress(f.read()))
+    assert isinstance(engine, Engine)
+    return engine
+
+
 class MainMenu(input_handers.BaseEventHandler):
     def on_render(self, console: Console) -> None:
         console.draw_semigraphics(background, 0, 0)
@@ -87,8 +97,13 @@ class MainMenu(input_handers.BaseEventHandler):
         if event.sym in (tcod.event.KeySym.q, tcod.event.KeySym.ESCAPE):
             raise SystemExit()
         elif event.sym == tcod.event.KeySym.c:
-            # TODO: Load the game here
-            pass
+            try:
+                return input_handers.MainGameEventHandler(load_game("savegame.sav"))
+            except FileNotFoundError:
+                return input_handers.PopupMessage(self, "No saved game.")
+            except Exception as exc:
+                traceback.print_exc()
+                return input_handers.PopupMessage(self, f"Failed to load save:\n{exc}")
         elif event.sym == tcod.event.KeySym.n:
             return input_handers.MainGameEventHandler(new_game())
 
