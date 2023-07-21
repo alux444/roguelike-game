@@ -347,3 +347,26 @@ class HistoryViewer(EventHandler):
         else:
             return MainGameEventHandler(self.engine)
         return None
+
+
+class PopupMessage(BaseEventHandler):
+    def __init__(self, parent_handler: BaseEventHandler, text: str) -> None:
+        self.parent = parent_handler
+        self.text = text
+
+    def on_render(self, console: Console) -> None:
+        self.parent.on_render(console)
+        console.rgb["fg"] //= 8
+        console.rgb["bg"] //= 8
+
+        console.print(
+            console.width // 2,
+            console.height // 2,
+            self.text,
+            fg=color.white,
+            bg=color.black,
+            alignment=libtcodpy.CENTER,
+        )
+
+    def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[BaseEventHandler]:
+        return self.parent
