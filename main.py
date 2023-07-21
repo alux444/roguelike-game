@@ -1,51 +1,21 @@
 import tcod
-import copy
 import color
 import traceback
 
 import exceptions
 import input_handers
-from engine import Engine
-from procgen import generate_dungeon
-import entity_factory
+import setup_game
 
 
 def main() -> None:
     screen_width = 82
     screen_height = 50
 
-    map_width = 80
-    map_height = 43
-
-    room_max_size = 10
-    room_min_size = 6
-    max_rooms = 30
-    max_mobs_room = 2
-    max_items_room = 2
-
     tileset = tcod.tileset.load_tilesheet(
         "dejavu10x10_gs_tc.png", 32, 8, tcod.tileset.CHARMAP_TCOD
     )
 
-    player = copy.deepcopy(entity_factory.player)
-    engine = Engine(player=player)
-
-    engine.map = generate_dungeon(
-        max_rooms=max_rooms,
-        max_mobs_room=max_mobs_room,
-        max_items_room=max_items_room,
-        room_min_size=room_min_size,
-        room_max_size=room_max_size,
-        map_width=map_width,
-        map_height=map_height,
-        engine=engine,
-    )
-
-    engine.message_log.add_message("Welcome to the rat dungeon.", color.welcome_text)
-
-    handler: input_handers.BaseEventHandler = input_handers.MainGameEventHandler(engine)
-
-    engine.update_fov()
+    handler: input_handers.BaseEventHandler = setup_game.MainMenu()
 
     with tcod.context.new_terminal(
         screen_width,
