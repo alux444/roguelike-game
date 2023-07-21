@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Callable, Tuple, Optional, TYPE_CHECKING, Union
 import tcod
+import os
 
 import tcod.event
 import libtcodpy
@@ -291,9 +292,17 @@ class MainGameEventHandler(EventHandler):
 
 
 class GameOverEventHandler(EventHandler):
+    def on_quit(self) -> None:
+        if os.path.exists("savegame.sav"):
+            os.remove("savegame.sav")
+        raise exceptions.QuitWithoutSaving()
+
+    def ev_quit(self, event: tcod.event.Quit) -> None:
+        self.on_quit()
+
     def ev_keydown(self, event: tcod.event.KeyDown) -> None:
         if event.sym == tcod.event.KeySym.ESCAPE:
-            raise SystemExit()
+            self.on_quit()
 
 
 CURSOR_KEYS = {
