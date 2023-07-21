@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable, Tuple, Optional, TYPE_CHECKING
+from typing import Callable, Tuple, Optional, TYPE_CHECKING, Union
 import tcod
 
 import tcod.event
@@ -32,6 +32,23 @@ MOVE_KEYS = {
 WAIT_KEYS = {tcod.event.KeySym.PERIOD}
 
 CONFIRM_KEYS = {tcod.event.KeySym.RETURN, tcod.event.KeySym.KP_ENTER}
+
+ActionOrHandler = Union[Action, "BaseEventHandler"]
+
+
+class BaseEventHandler(tcod.event.EventDispatch[ActionOrHandler]):
+    def handle_events(self, event: tcod.event.Event) -> BaseEventHandler:
+        state = self.dispatch(event)
+        if isinstance(state, BaseEventHandler):
+            return state
+        assert not isinstance(state, Action), f"{self!r} can not handle actions."
+        return self
+
+    def on_render(self, console: Console) -> None:
+        raise NotImplementedError()
+
+    def ev_quit(self, event: tcod.event.Quit) -> Optional[Action]:
+        raise SystemExit()
 
 
 class EventHandler(tcod.event.EventDispatch[Action]):
