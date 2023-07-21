@@ -7,6 +7,12 @@ import input_handers
 import setup_game
 
 
+def save_game(handler: input_handers.BaseEventHandler, filename: str) -> None:
+    if isinstance(handler, input_handers.EventHandler):
+        handler.engine.save_as(filename)
+        print("Game saved.")
+
+
 def main() -> None:
     screen_width = 82
     screen_height = 50
@@ -45,8 +51,10 @@ def main() -> None:
         except exceptions.QuitWithoutSaving:
             raise
         except SystemExit:
+            save_game(handler, "savegame.sav")
             raise
         except BaseException:
+            save_game(handler, "savegame.sav")
             raise
 
 

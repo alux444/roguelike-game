@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING
 
 from tcod.console import Console
 from tcod.map import compute_fov
+import lzma
+import pickle
 
 from render_functions import render_bar, render_names
 from message_log import MessageLog
@@ -24,6 +26,12 @@ class Engine:
         self.player = player
         self.message_log = MessageLog()
         self.mouse_loc = (0, 0)
+
+    def save_as(self, filename: str) -> None:
+        # save engine game file
+        save_data = lzma.compress(pickle.dumps(self))
+        with open(filename, "wb") as f:
+            f.write(save_data)
 
     def handle_mob_event(self) -> None:
         for entity in set(self.map.actors) - {self.player}:
