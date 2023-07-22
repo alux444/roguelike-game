@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Tuple
 
 import color
 
@@ -40,3 +40,8 @@ def render_names(console: Console, engine: Engine) -> None:
     names_at_loc = get_names_at_loc(x=mouse_x, y=mouse_y, map=engine.map)
 
     console.print(x=mouse_x + 1, y=mouse_y - 1, string=names_at_loc)
+
+
+def render_level(console: Console, level: int, location: Tuple[int, int]) -> None:
+    x, y = location
+    console.print(x=x, y=y, string=f"Dungeon Level: {level}")

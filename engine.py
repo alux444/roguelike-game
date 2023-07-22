@@ -7,7 +7,7 @@ from tcod.map import compute_fov
 import lzma
 import pickle
 
-from render_functions import render_bar, render_names
+from render_functions import render_bar, render_names, render_level
 from message_log import MessageLog
 import exceptions
 
@@ -60,5 +60,7 @@ class Engine:
             max_val=self.player.fighter.max_hp,
             total_width=20,
         )
+
+        render_level(console=console, level=self.world.current_floor, location=(0, 47))
 
         render_names(console=console, engine=self)
