@@ -48,3 +48,19 @@ class Level(BaseComponent):
     def increase_lvl(self) -> None:
         self.current_xp -= self.xp_to_lvl
         self.current_lvl += 1
+
+    def increase_max_hp(self, amount: int = 20) -> None:
+        self.parent.fighter.max_hp += amount
+        self.parent.fighter.hp += amount
+        self.engine.message_log.add_message(f"Max HP +{amount}!")
+        self.increase_lvl()
+
+    def increase_power(self, amount: int = 1) -> None:
+        self.parent.fighter.power += amount
+        self.engine.message_log.add_message(f"Power +{amount}!")
+        self.increase_lvl()
+
+    def increase_defense(self, amount: int = 1) -> None:
+        self.parent.fighter.defense += amount
+        self.engine.message_log.add_message(f"Defense +{amount}!")
+        self.increase_lvl
