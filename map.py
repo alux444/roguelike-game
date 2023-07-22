@@ -37,6 +37,8 @@ class GameMap:
             # explored but not currently visible
         )
 
+        self.downstairs_loc = (0, 0)
+
     @property
     def gamemap(self) -> GameMap:
         return self
