@@ -34,7 +34,8 @@ def new_game() -> Engine:
 
     engine = Engine(player=player)
 
-    engine.map = GameWorld(
+    engine.world = GameWorld(
+        engine=engine,
         max_rooms=max_rooms,
         room_min_size=room_min_size,
         room_max_size=room_max_size,
@@ -42,10 +43,9 @@ def new_game() -> Engine:
         map_height=map_height,
         max_mobs_room=max_mobs_room,
         max_items_room=max_items_room,
-        engine=engine,
     )
 
-    engine.word.generate_floor()
+    engine.world.generate_floor()
     engine.update_fov()
 
     engine.message_log.add_message("Welcome to the rat dungeon", color.welcome_text)

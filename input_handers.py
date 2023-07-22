@@ -265,8 +265,14 @@ class MainGameEventHandler(EventHandler):
         action: Optional[ActionOrHandler] = None
 
         key = event.sym
+        modifier = event.mod
 
         player = self.engine.player
+
+        if key == tcod.event.KeySym.PERIOD and modifier & (
+            tcod.event.KMOD_LSHIFT | tcod.event.KMOD_RSHIFT
+        ):
+            return actions.DescendAction(player)
 
         if key in MOVE_KEYS:
             dx, dy = MOVE_KEYS[key]
