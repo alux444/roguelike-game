@@ -63,6 +63,8 @@ class EventHandler(BaseEventHandler):
         if self.handle_action(action_or_state):
             if not self.engine.player.is_alive:
                 return GameOverEventHandler(self.engine)
+            elif self.engine.player.level.reqs_lvl_up:
+                return LevelUpEventHandler(self.engine)
             return MainGameEventHandler(self.engine)
         return self
 
@@ -435,11 +437,11 @@ class LevelUpEventHandler(AskUserEventHandler):
 
         if 0 <= index <= 2:
             if index == 0:
-                player.level.increase_max_hp
+                player.level.increase_max_hp()
             elif index == 1:
-                player.level.increase_power
+                player.level.increase_power()
             elif index == 2:
-                player.level.increase_defense
+                player.level.increase_defense()
         else:
             self.engine.message_log.add_message("Invalid choice.", color.invalid)
 

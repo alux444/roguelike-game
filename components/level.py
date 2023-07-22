@@ -27,7 +27,7 @@ class Level(BaseComponent):
 
     @property
     def xp_to_lvl(self) -> int:
-        return self.lvl_up_base + self.current_lvl * self.lvl_up_factor
+        return self.lvl_up_base + (self.current_lvl * self.lvl_up_factor)
 
     @property
     def reqs_lvl_up(self) -> bool:
