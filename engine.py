@@ -13,11 +13,12 @@ import exceptions
 
 if TYPE_CHECKING:
     from entity import Actor
-    from map import GameMap
+    from map import GameMap, GameWorld
 
 
 class Engine:
     map: GameMap
+    world: GameWorld
 
     def __init__(
         self,

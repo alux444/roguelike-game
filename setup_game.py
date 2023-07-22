@@ -14,7 +14,7 @@ import color
 from engine import Engine
 import entity_factory
 import input_handers
-from procgen import generate_dungeon
+from map import GameWorld
 
 background = tcod.image.load("menu_background.png")[:, :, :3]
 
@@ -34,7 +34,7 @@ def new_game() -> Engine:
 
     engine = Engine(player=player)
 
-    engine.map = generate_dungeon(
+    engine.map = GameWorld(
         max_rooms=max_rooms,
         room_min_size=room_min_size,
         room_max_size=room_max_size,
@@ -45,6 +45,7 @@ def new_game() -> Engine:
         engine=engine,
     )
 
+    engine.word.generate_floor()
     engine.update_fov()
 
     engine.message_log.add_message("Welcome to the rat dungeon", color.welcome_text)
