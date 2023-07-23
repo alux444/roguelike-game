@@ -505,8 +505,12 @@ class CharInfoEventHandler(AskUserEventHandler):
             string=f"XP: {self.engine.player.level.current_xp} / {self.engine.player.level.xp_to_lvl}",
         )
         console.print(
-            x=x + 1, y=y + 4, string=f"Attack: {self.engine.player.fighter.power}"
+            x=x + 1,
+            y=y + 4,
+            string=f"Attack: {self.engine.player.fighter.power} (+{self.engine.player.equipment.power_bonus})",
         )
         console.print(
-            x=x + 1, y=y + 5, string=f"Defense: {self.engine.player.level.current_lvl}"
+            x=x + 1,
+            y=y + 5,
+            string=f"Defense: {self.engine.player.level.current_lvl} (+{self.engine.player.equipment.defense_bonus})",
         )
