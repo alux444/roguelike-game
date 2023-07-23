@@ -27,9 +27,6 @@ def new_game() -> Engine:
     room_min_size = 6
     max_rooms = 30
 
-    max_mobs_room = 2
-    max_items_room = 2
-
     player = copy.deepcopy(entity_factory.player)
 
     engine = Engine(player=player)
@@ -41,8 +38,6 @@ def new_game() -> Engine:
         room_max_size=room_max_size,
         map_width=map_width,
         map_height=map_height,
-        max_mobs_room=max_mobs_room,
-        max_items_room=max_items_room,
     )
 
     engine.world.generate_floor()

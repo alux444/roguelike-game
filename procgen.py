@@ -9,6 +9,24 @@ import tcod
 if TYPE_CHECKING:
     from engine import Engine
 
+max_items_floor = [(1, 1), (4, 2)]
+
+max_mobs_floor = [(1, 2), (4, 3), (6, 5)]
+
+
+def get_max_val_for_floor(
+    weighted_chance_floor: List[Tuple[int, int]], floor: int
+) -> int:
+    current = 0
+
+    for floor_min, value in weighted_chance_floor:
+        if floor_min > floor:
+            break
+        else:
+            current = value
+
+    return current
+
 
 class RectangularRoom:
     def __init__(self, x: int, y: int, width: int, height: int):
@@ -54,11 +72,9 @@ def tunnel_between(
         yield x, y
 
 
-def place_entities(
-    room: RectangularRoom, dungeon: GameMap, max_mobs: int, max_items: int
-) -> None:
-    number_of_mobs = random.randint(0, max_mobs)
-    number_of_items = random.randint(0, max_items)
+def place_entities(room: RectangularRoom, dungeon: GameMap, floor: int) -> None:
+    number_of_mobs = random.randint(0, get_max_val_for_floor(max_mobs_floor, floor))
+    number_of_items = random.randint(0, get_max_val_for_floor(max_mobs_floor, floor))
 
     for _ in range(number_of_mobs):
         x = random.randint(room.x1 + 1, room.x2 - 1)
@@ -88,8 +104,6 @@ def place_entities(
 
 def generate_dungeon(
     max_rooms: int,
-    max_mobs_room: int,
-    max_items_room: int,
     room_min_size: int,
     room_max_size: int,
     engine: Engine,
@@ -125,7 +139,7 @@ def generate_dungeon(
 
             center_of_last_room = new_room.center
 
-        place_entities(new_room, dungeon, max_mobs_room, max_items_room)
+        place_entities(new_room, dungeon, engine.world.current_floor)
 
         dungeon.tiles[center_of_last_room] = tile_types.down_stairs
         dungeon.downstairs_loc = center_of_last_room
