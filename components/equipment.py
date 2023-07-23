@@ -52,3 +52,36 @@ class Equipment(BaseComponent):
         self.parent.gamemap.engine.message_log.add_message(
             f"You equip the {item_name}."
         )
+
+    def equip_to_slot(self, slot: str, item: Item, add_message: bool) -> None:
+        current_item = getattr(self, slot)
+
+        if current_item is not None:
+            self.unequip_from_slot(slot, add_message)
+
+        setattr(self, slot, item)
+
+        if add_message:
+            self.equip_message(item.name)
+
+    def unequip_from_slot(self, slot: str, add_message: bool) -> Non:
+        current_item = getattr(self, slot)
+
+        if add_message:
+            self.unequip_message(current_item.name)
+
+        setattr(self, slot, None)
+
+    def toggle_equip(self, equippable_item: Item, add_message: bool = True) -> None:
+        if (
+            equippable_item.equippable
+            and equippable_item.equippable.type == EquipmentType.WEAPON
+        ):
+            slot = "weapon"
+        else:
+            slot = "shield"
+
+        if getattr(self, slot) == equippable_item:
+            self.unequip_from_slot(slot, add_message)
+        else:
+            self.equip_to_slot(slot, equippable_item, add_message)
