@@ -7,7 +7,6 @@ import random
 import tcod
 
 from actions import Action, BumpAction, MeleeAction, MovementAction, WaitAction
-from entity import Actor
 
 if TYPE_CHECKING:
     from entity import Actor

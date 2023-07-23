@@ -64,7 +64,7 @@ class Equipment(BaseComponent):
         if add_message:
             self.equip_message(item.name)
 
-    def unequip_from_slot(self, slot: str, add_message: bool) -> Non:
+    def unequip_from_slot(self, slot: str, add_message: bool) -> None:
         current_item = getattr(self, slot)
 
         if add_message:

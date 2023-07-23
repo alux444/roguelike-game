@@ -15,10 +15,10 @@ max_items_floor = [(1, 1), (4, 2)]
 max_mobs_floor = [(1, 2), (4, 3), (6, 5)]
 
 item_chances: Dict[int, List[Tuple[Entity, int]]] = {
-    0: [(entity_factory.health_potion, 35)],
-    1: [(entity_factory.confusion_scroll, 10)],
-    2: [(entity_factory.lightning_scroll, 25)],
-    3: [(entity_factory.bomb, 25)],
+    0: [(entity_factory.health_potion, 35), (entity_factory.stick, 10)],
+    1: [(entity_factory.confusion_scroll, 10), (entity_factory.shield, 15)],
+    2: [(entity_factory.lightning_scroll, 25), (entity_factory.knife, 5)],
+    3: [(entity_factory.bomb, 25), (entity_factory.big_shield, 15)],
 }
 
 enemy_chances: Dict[int, List[Tuple[Entity, int]]] = {

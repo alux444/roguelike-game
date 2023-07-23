@@ -18,7 +18,7 @@ player = Actor(
     color=(255, 255, 255),
     name="Player",
     ai_cls=HostileEnemy,
-    fighter=Fighter(hp=30, defense=2, power=5),
+    fighter=Fighter(hp=30, base_defense=2, base_power=5),
     inventory=Inventory(capacity=26),
     level=Level(lvl_up_base=50),
     equipment=Equipment(),
@@ -29,7 +29,7 @@ rat = Actor(
     color=(63, 127, 64),
     name="Rat",
     ai_cls=HostileEnemy,
-    fighter=Fighter(hp=10, defense=0, power=3),
+    fighter=Fighter(hp=10, base_defense=0, base_power=3),
     inventory=Inventory(capacity=0),
     level=Level(xp_given=35),
     equipment=Equipment(),
@@ -40,7 +40,7 @@ frog = Actor(
     color=(0, 127, 0),
     name="Frog",
     ai_cls=HostileEnemy,
-    fighter=Fighter(hp=16, defense=1, power=4),
+    fighter=Fighter(hp=16, base_defense=1, base_power=4),
     inventory=Inventory(capacity=0),
     level=Level(xp_given=100),
     equipment=Equipment(),
@@ -80,19 +80,19 @@ stick = Item(
     name="Stick",
     equippable=components.equippable.Stick(),
 )
-stick = Item(
+knife = Item(
     char="/",
     color=(0, 191, 255),
     name="Knife",
     equippable=components.equippable.Knife(),
 )
-stick = Item(
+shield = Item(
     char="o",
     color=(0, 191, 255),
     name="Shield",
     equippable=components.equippable.Shield(),
 )
-stick = Item(
+big_shield = Item(
     char="o",
     color=(0, 191, 255),
     name="Big Shield",
