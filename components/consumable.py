@@ -76,7 +76,7 @@ class LightningConsumable(Consumable):
                 f"You zap {target.name} for {self.damage} damage."
             )
             target.fighter.take_damage(self.damage)
-            self.consume
+            self.consume()
         else:
             raise Impossible("No enemies to zap.")
 
