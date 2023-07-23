@@ -1,4 +1,5 @@
 from entity import Actor, Item
+import components.equippable
 from components.consumable import (
     HealingConsumable,
     LightningConsumable,
@@ -9,6 +10,7 @@ from components.ai import HostileEnemy
 from components.fighter import Fighter
 from components.inventory import Inventory
 from components.level import Level
+
 
 player = Actor(
     char="@",
@@ -66,4 +68,29 @@ bomb = Item(
     color=(255, 0, 0),
     name="Bomb",
     consumable=BombConsumable(damage=12, radius=3),
+)
+
+stick = Item(
+    char="/",
+    color=(0, 191, 255),
+    name="Stick",
+    equippable=components.equippable.Stick(),
+)
+stick = Item(
+    char="/",
+    color=(0, 191, 255),
+    name="Knife",
+    equippable=components.equippable.Knife(),
+)
+stick = Item(
+    char="o",
+    color=(0, 191, 255),
+    name="Shield",
+    equippable=components.equippable.Shield(),
+)
+stick = Item(
+    char="o",
+    color=(0, 191, 255),
+    name="Big Shield",
+    equippable=components.equippable.BigShield(),
 )

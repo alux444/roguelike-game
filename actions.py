@@ -39,7 +39,8 @@ class ItemAction(Action):
         return self.engine.map.get_actor_at(*self.target_xy)
 
     def perform(self) -> None:
-        self.item.consumable.activate(self)
+        if self.item.consumable:
+            self.item.consumable.activate(self)
 
 
 class PickupAction(Action):
