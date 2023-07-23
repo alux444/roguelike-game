@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from components.inventory import Inventory
     from components.consumable import Consumable
     from components.equippable import Equippable
+    from components.equipment import Equipment
     from components.level import Level
     from map import GameMap
 
@@ -91,6 +92,7 @@ class Actor(Entity):
         name: str = "<Unnamed>",
         ai_cls: Type[BaseAi],
         fighter: Fighter,
+        equipment: Equipment,
         inventory: Inventory,
         level: Level,
     ):
@@ -111,6 +113,9 @@ class Actor(Entity):
         self.inventory.parent = self
         self.level = level
         self.level.parent = self
+
+        self.equipment: Equipment = equipment
+        self.equipment.parent = self
 
     @property
     def is_alive(self) -> bool:
