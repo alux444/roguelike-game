@@ -5,7 +5,7 @@ import tcod
 import os
 
 import tcod.event
-import libtcodpy
+import tcod as libtcodpy
 from tcod.console import Console
 
 import actions
@@ -459,8 +459,6 @@ class LevelUpEventHandler(AskUserEventHandler):
                 player.level.increase_defense()
         else:
             self.engine.message_log.add_message("Invalid choice.", color.invalid)
-
-            return None
 
         return super().ev_keydown(event)
 

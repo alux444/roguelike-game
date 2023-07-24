@@ -25,7 +25,9 @@ enemy_chances: Dict[int, List[Tuple[Entity, int]]] = {
     0: [(entity_factory.rat, 80)],
     2: [(entity_factory.frog, 15)],
     4: [(entity_factory.frog, 30)],
-    6: [(entity_factory.frog, 50)],
+    6: [(entity_factory.demon_rat, 30)],
+    7: [(entity_factory.demon_rat, 40)],
+    8: [(entity_factory.demon_frog, 30)],
 }
 
 
@@ -149,7 +151,7 @@ def generate_dungeon(
         room_height = random.randint(room_min_size, room_max_size)
 
         x = random.randint(0, dungeon.width - room_width - 1)
-        y = random.randint(0, dungeon.height - room_width - 1)
+        y = random.randint(0, dungeon.height - room_height - 1)
 
         new_room = RectangularRoom(x, y, room_width, room_height)
 

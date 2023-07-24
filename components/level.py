@@ -63,4 +63,4 @@ class Level(BaseComponent):
     def increase_defense(self, amount: int = 1) -> None:
         self.parent.fighter.base_defense += amount
         self.engine.message_log.add_message(f"Defense +{amount}!")
-        self.increase_lvl
+        self.increase_lvl()

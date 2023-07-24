@@ -46,6 +46,28 @@ frog = Actor(
     equipment=Equipment(),
 )
 
+demon_rat = Actor(
+    char="R",
+    color=(255, 0, 0),
+    name="Demon Rat",
+    ai_cls=HostileEnemy,
+    fighter=Fighter(hp=25, base_defense=2, base_power=5),
+    inventory=Inventory(capacity=0),
+    level=Level(xp_given=35),
+    equipment=Equipment(),
+)
+
+demon_frog = Actor(
+    char="F",
+    color=(255, 0, 0),
+    name="Demon Frog",
+    ai_cls=HostileEnemy,
+    fighter=Fighter(hp=30, base_defense=2, base_power=6),
+    inventory=Inventory(capacity=0),
+    level=Level(xp_given=35),
+    equipment=Equipment(),
+)
+
 health_potion = Item(
     char="+",
     color=(127, 0, 255),
